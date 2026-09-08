@@ -25,18 +25,22 @@ const VALUE_PROPS = [
 
 const AUDIENCE = [
   {
+    emoji: '🤰',
     title: 'Для первородящих',
     text: 'Первые роды? Разберём процесс по минутам: от первой схватки до выписки.',
   },
   {
+    emoji: '🧘‍♀️',
     title: 'Для тех, кто осознанно подходит к родам',
     text: 'Хотите мягкие роды? Изучим биомеханику, техники дыхания и ваши права в роддоме.',
   },
   {
+    emoji: '🔄',
     title: 'Для тех, кто пошёл за вторым',
     text: 'Был негативный опыт? Поможем прожить страхи и составить новый, позитивный сценарий.',
   },
   {
+    emoji: '💑',
     title: 'Для пар',
     text: 'Рожаете вместе? Сделаем из мужа супер-помощника (практические техники массажа).',
   },
@@ -132,47 +136,27 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-5xl px-6 py-12">
         <h2 className="text-center text-2xl font-semibold text-foreground">Для кого этот курс</h2>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {AUDIENCE.map((item) => (
-            <div key={item.title} className="rounded-2xl border border-border bg-card p-5">
-              <p className="font-medium text-foreground">{item.title}</p>
-              <p className="mt-2 text-sm opacity-80">{item.text}</p>
+        <div className="mt-8 grid gap-5 sm:grid-cols-2">
+          {AUDIENCE.map((item, index) => (
+            <div
+              key={item.title}
+              className={`flex items-start gap-4 rounded-2xl p-5 ${
+                index % 2 === 0 ? 'bg-pink/10' : 'bg-lilac/10'
+              }`}
+            >
+              <span
+                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl ${
+                  index % 2 === 0 ? 'bg-pink/20' : 'bg-lilac/20'
+                }`}
+              >
+                {item.emoji}
+              </span>
+              <div>
+                <p className="font-medium text-foreground">{item.title}</p>
+                <p className="mt-1 text-sm opacity-80">{item.text}</p>
+              </div>
             </div>
           ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-5xl px-6 py-12">
-        <div className="grid items-center gap-10 rounded-3xl border border-border bg-card p-8 shadow-sm shadow-lilac/10 md:grid-cols-[300px_1fr]">
-          <div className="mx-auto w-full max-w-xs">
-            <Image
-              src="/author.jpg"
-              alt={AUTHOR.name}
-              width={1024}
-              height={1280}
-              className="rounded-3xl object-cover"
-            />
-          </div>
-          <div className="text-center md:text-left">
-            <p className="text-xs font-semibold uppercase tracking-widest text-pink-dark">Автор курса</p>
-            <h2 className="mt-2 text-2xl font-semibold text-foreground">{AUTHOR.name}</h2>
-            <div className="mt-4 space-y-2 text-sm opacity-80">
-              {AUTHOR.bioLines.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-            </div>
-            <p className="mt-4 text-sm font-medium text-foreground">{AUTHOR.rating}</p>
-            <div className="mt-6">
-              <a
-                href={AUTHOR.profileUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-block rounded-full bg-gradient-to-r from-pink to-lilac px-6 py-2.5 text-sm font-medium text-white hover:opacity-90"
-              >
-                Профиль врача на ПроДокторов
-              </a>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -209,6 +193,40 @@ export default async function HomePage() {
             >
               Купить пакет
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-6 py-12">
+        <div className="grid items-center gap-10 rounded-3xl border border-border bg-card p-8 shadow-sm shadow-lilac/10 md:grid-cols-[300px_1fr]">
+          <div className="mx-auto w-full max-w-xs">
+            <Image
+              src="/author.jpg"
+              alt={AUTHOR.name}
+              width={1024}
+              height={1280}
+              className="rounded-3xl object-cover"
+            />
+          </div>
+          <div className="text-center md:text-left">
+            <p className="text-xs font-semibold uppercase tracking-widest text-pink-dark">Автор курса</p>
+            <h2 className="mt-2 text-2xl font-semibold text-foreground">{AUTHOR.name}</h2>
+            <div className="mt-4 space-y-2 text-sm opacity-80">
+              {AUTHOR.bioLines.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+            <p className="mt-4 text-sm font-medium text-foreground">{AUTHOR.rating}</p>
+            <div className="mt-6">
+              <a
+                href={AUTHOR.profileUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block rounded-full bg-gradient-to-r from-pink to-lilac px-6 py-2.5 text-sm font-medium text-white hover:opacity-90"
+              >
+                Профиль врача на ПроДокторов
+              </a>
+            </div>
           </div>
         </div>
       </section>
