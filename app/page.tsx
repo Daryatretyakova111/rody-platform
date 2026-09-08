@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getCourses } from '@/lib/queries';
 import { bundlePriceCents, formatPrice, BUNDLE_DISCOUNT_PERCENT } from '@/lib/config';
 import CourseCard from '@/components/CourseCard';
@@ -61,21 +62,38 @@ export default async function HomePage() {
 
   return (
     <div>
-      <section className="mx-auto max-w-3xl px-6 pt-20 pb-16 text-center">
-        <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
-          Пройти путь от беременности до восстановления спокойно и подготовленной
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg opacity-80">
-          Три курса, которые дают знания и уверенность на каждом этапе: подготовка к родам, сами роды и
-          восстановление после них. Видео-уроки, гайды, чек-листы и инструкции — в одном личном кабинете.
-        </p>
-        <div className="mt-8">
-          <Link
-            href="#courses"
-            className="rounded-full bg-gradient-to-r from-pink to-lilac px-8 py-3 text-sm font-medium text-white hover:opacity-90"
-          >
-            Смотреть курсы
-          </Link>
+      <section className="mx-auto max-w-5xl px-6 pt-16 pb-16">
+        <div className="grid items-center gap-10 md:grid-cols-2">
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
+              Авторские курсы Дарьи Ерохиной
+            </h1>
+            <p className="mt-4 text-xl italic text-lilac-dark">
+              Пройди путь от беременности до восстановления спокойной, уверенной и подготовленной
+            </p>
+            <p className="mx-auto mt-4 max-w-xl text-lg opacity-80 md:mx-0">
+              Три курса, которые дают знания и уверенность на каждом этапе: подготовка к родам, сами роды и
+              восстановление после них. Видео-уроки, гайды, чек-листы и инструкции — в одном личном кабинете.
+            </p>
+            <div className="mt-8">
+              <Link
+                href="#courses"
+                className="rounded-full bg-gradient-to-r from-pink to-lilac px-8 py-3 text-sm font-medium text-white hover:opacity-90"
+              >
+                Смотреть курсы
+              </Link>
+            </div>
+          </div>
+          <div className="mx-auto w-full max-w-xs md:max-w-sm">
+            <Image
+              src="/darya-erokhina.jpg"
+              alt="Дарья Ерохина"
+              width={1024}
+              height={1280}
+              priority
+              className="rounded-3xl object-cover shadow-lg shadow-pink/20"
+            />
+          </div>
         </div>
       </section>
 
