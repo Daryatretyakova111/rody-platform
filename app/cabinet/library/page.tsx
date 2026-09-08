@@ -17,13 +17,13 @@ export default async function LibraryPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Библиотека материалов</h1>
+      <h1 className="text-2xl font-bold text-foreground">Библиотека материалов</h1>
       {materials.length === 0 ? (
         <p className="mt-4 opacity-80">Материалы появятся здесь после покупки курса.</p>
       ) : (
         Array.from(byCourseTitle.entries()).map(([courseTitle, items]) => (
           <div key={courseTitle} className="mt-8">
-            <h2 className="text-lg font-semibold">{courseTitle}</h2>
+            <h2 className="text-lg font-semibold text-foreground">{courseTitle}</h2>
             <MaterialsList materials={items} />
           </div>
         ))

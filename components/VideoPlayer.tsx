@@ -1,7 +1,7 @@
 export default function VideoPlayer({ kinescopeVideoId }: { kinescopeVideoId: string | null }) {
   if (!kinescopeVideoId) {
     return (
-      <div className="flex aspect-video items-center justify-center rounded-xl bg-black/[.05] text-sm opacity-60 dark:bg-white/[.06]">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-muted text-sm opacity-60">
         Видео скоро появится
       </div>
     );

@@ -31,7 +31,7 @@ export default async function LessonPage({ params }: PageProps<'/cabinet/courses
   return (
     <div>
       <p className="text-sm opacity-60">{course.title}</p>
-      <h1 className="text-2xl font-bold">{lesson.title}</h1>
+      <h1 className="text-2xl font-bold text-foreground">{lesson.title}</h1>
 
       <div className="mt-6">
         <VideoPlayer kinescopeVideoId={lesson.kinescope_video_id} />

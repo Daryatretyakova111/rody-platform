@@ -19,12 +19,12 @@ export default function CheckoutForm({ kind, courseSlug, priceLabel }: CheckoutF
           type="email"
           required
           placeholder="you@example.com"
-          className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 dark:border-white/20 dark:bg-transparent"
+          className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 focus:border-lilac focus:outline-none"
         />
       </div>
       <button
         type="submit"
-        className="rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background"
+        className="rounded-full bg-gradient-to-r from-pink to-lilac px-6 py-2.5 text-sm font-medium text-white hover:opacity-90"
       >
         Купить за {priceLabel}
       </button>

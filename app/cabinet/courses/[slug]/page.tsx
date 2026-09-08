@@ -19,12 +19,12 @@ export default async function CabinetCoursePage({ params }: PageProps<'/cabinet/
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">{course.title}</h1>
+      <h1 className="text-2xl font-bold text-foreground">{course.title}</h1>
       <ol className="mt-6 space-y-4">
         {modules.map((mod, index) => (
-          <li key={mod.id} className="rounded-xl border border-black/10 p-4 dark:border-white/10">
+          <li key={mod.id} className="rounded-2xl border border-border bg-card p-4">
             <p className="text-sm opacity-60">Модуль {index + 1}</p>
-            <p className="font-medium">{mod.title}</p>
+            <p className="font-medium text-foreground">{mod.title}</p>
             <ul className="mt-2 space-y-1">
               {mod.lessons.map((lesson) => (
                 <li key={lesson.id}>

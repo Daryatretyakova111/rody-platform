@@ -15,10 +15,10 @@ export default function MaterialsList({ materials }: { materials: Material[] }) 
       {materials.map((material) => (
         <li
           key={material.id}
-          className="flex items-center justify-between rounded-lg border border-black/10 px-4 py-3 dark:border-white/10"
+          className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3"
         >
           <div>
-            <span className="mr-2 rounded-full bg-black/[.06] px-2 py-0.5 text-xs dark:bg-white/[.1]">
+            <span className="mr-2 rounded-full bg-muted px-2 py-0.5 text-xs text-lilac-dark">
               {TYPE_LABELS[material.type]}
             </span>
             {material.title}

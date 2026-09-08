@@ -39,7 +39,7 @@ export default function CompleteLessonButton({
     <button
       onClick={handleClick}
       disabled={pending}
-      className="rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background disabled:opacity-50"
+      className="rounded-full bg-gradient-to-r from-pink to-lilac px-5 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
     >
       {pending ? 'Сохраняем…' : 'Отметить как пройденный'}
     </button>

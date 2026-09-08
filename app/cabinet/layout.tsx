@@ -11,8 +11,12 @@ export default async function CabinetLayout({ children }: LayoutProps<'/cabinet'
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
       <nav className="mb-8 flex gap-6 text-sm opacity-80">
-        <Link href="/cabinet">Мои курсы</Link>
-        <Link href="/cabinet/library">Библиотека материалов</Link>
+        <Link href="/cabinet" className="hover:text-pink-dark">
+          Мои курсы
+        </Link>
+        <Link href="/cabinet/library" className="hover:text-pink-dark">
+          Библиотека материалов
+        </Link>
       </nav>
       {children}
     </div>
