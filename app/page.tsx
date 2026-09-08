@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { getCourses } from '@/lib/queries';
 import { BUNDLE_PRICE_CENTS, formatPrice } from '@/lib/config';
 import CourseCard from '@/components/CourseCard';
+import { IconSprout, IconLotus, IconCycle, IconHearts } from '@/components/icons';
 
 const VALUE_PROPS = [
   {
@@ -25,22 +26,22 @@ const VALUE_PROPS = [
 
 const AUDIENCE = [
   {
-    emoji: '🤰',
+    Icon: IconSprout,
     title: 'Для первородящих',
     text: 'Первые роды? Разберём процесс по минутам: от первой схватки до выписки.',
   },
   {
-    emoji: '🧘‍♀️',
+    Icon: IconLotus,
     title: 'Для тех, кто осознанно подходит к родам',
     text: 'Хотите мягкие роды? Изучим биомеханику, техники дыхания и ваши права в роддоме.',
   },
   {
-    emoji: '🔄',
+    Icon: IconCycle,
     title: 'Для тех, кто пошёл за вторым',
     text: 'Был негативный опыт? Поможем прожить страхи и составить новый, позитивный сценарий.',
   },
   {
-    emoji: '💑',
+    Icon: IconHearts,
     title: 'Для пар',
     text: 'Рожаете вместе? Сделаем из мужа супер-помощника (практические техники массажа).',
   },
@@ -137,19 +138,13 @@ export default async function HomePage() {
       <section className="mx-auto max-w-5xl px-6 py-12">
         <h2 className="text-center text-2xl font-semibold text-foreground">Для кого этот курс</h2>
         <div className="mt-8 grid gap-5 sm:grid-cols-2">
-          {AUDIENCE.map((item, index) => (
+          {AUDIENCE.map((item) => (
             <div
               key={item.title}
-              className={`flex items-start gap-4 rounded-2xl p-5 ${
-                index % 2 === 0 ? 'bg-pink/10' : 'bg-lilac/10'
-              }`}
+              className="flex items-start gap-4 rounded-2xl border border-lilac/40 bg-lilac/10 p-5"
             >
-              <span
-                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl ${
-                  index % 2 === 0 ? 'bg-pink/20' : 'bg-lilac/20'
-                }`}
-              >
-                {item.emoji}
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-lilac/20 text-lilac-dark">
+                <item.Icon className="h-6 w-6" />
               </span>
               <div>
                 <p className="font-medium text-foreground">{item.title}</p>
