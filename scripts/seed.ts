@@ -21,6 +21,7 @@ interface SeedCourse {
   title: string;
   subtitle: string;
   description: string;
+  imageUrl: string;
   priceCents: number;
   modules: SeedModule[];
 }
@@ -28,11 +29,12 @@ interface SeedCourse {
 const courses: SeedCourse[] = [
   {
     slug: 'podgotovka-k-rodam',
-    title: 'Подготовка к родам',
-    subtitle: 'С 28–30 недели: как встретить роды спокойно и подготовленной',
+    title: 'Беременность и подготовка к родам',
+    subtitle: 'Движение, питание, эмоции и подготовка к важному событию',
     description:
       'Курс для будущих мам: что происходит с телом, как распознать начало родов, что взять с собой, как выбрать обезболивание и подготовиться психологически.',
-    priceCents: 499000,
+    imageUrl: '/courses/podgotovka-k-rodam.jpg',
+    priceCents: 290000,
     modules: [
       { title: 'Триместр за триместром', lesson: 'Что происходит с телом и малышом', material: { type: 'guide', title: 'Норма vs повод к врачу' } },
       { title: 'Предвестники родов', lesson: 'Как распознать, что роды близко', material: { type: 'checklist', title: 'Схватки Брекстона-Хикса vs настоящие' } },
@@ -49,10 +51,11 @@ const courses: SeedCourse[] = [
   {
     slug: 'rody',
     title: 'Роды',
-    subtitle: 'Пошагово по периодам родов — держите под рукой в процессе',
+    subtitle: 'Теория всех этапов и практика самопомощи',
     description:
       'Что происходит в каждом периоде родов, какие вмешательства возможны и зачем, как помогать себе и как партнёру поддержать вас.',
-    priceCents: 499000,
+    imageUrl: '/courses/rody.jpg',
+    priceCents: 290000,
     modules: [
       { title: 'Первый период: латентная фаза', lesson: 'Что происходит, как себя вести дома', material: { type: 'instruction', title: 'Когда фаза меняется' } },
       { title: 'Первый период: активная фаза', lesson: 'Схватки, позы, самопомощь', material: { type: 'tip', title: 'Позы для облегчения боли' } },
@@ -67,10 +70,11 @@ const courses: SeedCourse[] = [
   {
     slug: 'vosstanovlenie',
     title: 'Восстановление после родов',
-    subtitle: 'Первые 42 дня и дальше: тело, гормоны, грудное вскармливание',
+    subtitle: 'Грудное вскармливание, «золотой час», импринтинг и уход за новорождённым',
     description:
       'Как проходит восстановление после естественных родов и кесарева, на что обращать внимание, когда возвращаться к спорту и близости, как наладить ГВ.',
-    priceCents: 499000,
+    imageUrl: '/courses/vosstanovlenie.jpg',
+    priceCents: 290000,
     modules: [
       { title: 'Первые 42 дня', lesson: 'Лохии, инволюция матки, норма выделений', material: { type: 'checklist', title: 'Тревожные симптомы: срочно к врачу' } },
       { title: 'Уход после естественных родов', lesson: 'Швы промежности, гигиена', material: { type: 'instruction', title: 'Пошаговый уход за швами' } },
@@ -89,12 +93,13 @@ const courses: SeedCourse[] = [
 async function main() {
   for (const [courseIndex, course] of courses.entries()) {
     const [courseRow] = await sql`
-      INSERT INTO courses (slug, title, subtitle, description, price_cents, sort_order)
-      VALUES (${course.slug}, ${course.title}, ${course.subtitle}, ${course.description}, ${course.priceCents}, ${courseIndex})
+      INSERT INTO courses (slug, title, subtitle, description, image_url, price_cents, sort_order)
+      VALUES (${course.slug}, ${course.title}, ${course.subtitle}, ${course.description}, ${course.imageUrl}, ${course.priceCents}, ${courseIndex})
       ON CONFLICT (slug) DO UPDATE SET
         title = EXCLUDED.title,
         subtitle = EXCLUDED.subtitle,
         description = EXCLUDED.description,
+        image_url = EXCLUDED.image_url,
         price_cents = EXCLUDED.price_cents,
         sort_order = EXCLUDED.sort_order
       RETURNING id

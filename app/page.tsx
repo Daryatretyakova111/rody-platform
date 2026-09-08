@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getCourses } from '@/lib/queries';
-import { bundlePriceCents, formatPrice, BUNDLE_DISCOUNT_PERCENT } from '@/lib/config';
+import { BUNDLE_PRICE_CENTS, formatPrice } from '@/lib/config';
 import CourseCard from '@/components/CourseCard';
 
 const VALUE_PROPS = [
@@ -24,11 +24,34 @@ const VALUE_PROPS = [
 ];
 
 const AUDIENCE = [
-  { title: 'Готовитесь к первым родам', text: 'Хотите понимать, что происходит на каждом этапе, и не полагаться только на интуицию.' },
-  { title: 'Уже рожали и хотите иначе', text: 'В прошлый раз что-то пошло не так, как хотелось — сейчас хочется подготовиться осознаннее.' },
-  { title: 'Партнёр, который хочет помочь', text: 'Не растеряться в родзале и понимать, чем реально можно быть полезным.' },
-  { title: 'Тревожитесь и хотите разобраться', text: 'Страх часто держится на неизвестности — курс закрывает вопросы «а что если...».' },
+  {
+    title: 'Для первородящих',
+    text: 'Первые роды? Разберём процесс по минутам: от первой схватки до выписки.',
+  },
+  {
+    title: 'Для тех, кто осознанно подходит к родам',
+    text: 'Хотите мягкие роды? Изучим биомеханику, техники дыхания и ваши права в роддоме.',
+  },
+  {
+    title: 'Для тех, кто пошёл за вторым',
+    text: 'Был негативный опыт? Поможем прожить страхи и составить новый, позитивный сценарий.',
+  },
+  {
+    title: 'Для пар',
+    text: 'Рожаете вместе? Сделаем из мужа супер-помощника (практические техники массажа).',
+  },
 ];
+
+const AUTHOR = {
+  name: 'Дарья Владимировна Ерохина',
+  bioLines: [
+    'Врач-акушер-гинеколог, врач ультразвуковой диагностики. Стаж 8 лет, Санкт-Петербург.',
+    'Основное место работы: Всеволожский родильный дом, «М+Клиник» (Кудрово).',
+    'Образование: Тихоокеанский государственный медицинский университет (лечебное дело), ординатура по акушерству и гинекологии (НМИЦ им. В. А. Алмазова), ультразвуковая диагностика (СПбГУ).',
+  ],
+  rating: 'Рейтинг на ПроДокторов: 5,0 · 65 отзывов пациентов.',
+  profileUrl: 'https://prodoctorov.ru/spb/vrach/989378-tretyakova/',
+};
 
 const MATERIAL_TYPES = [
   { title: 'Видео-уроки', text: 'Короткие уроки по каждой теме' },
@@ -58,7 +81,6 @@ const FAQ = [
 
 export default async function HomePage() {
   const courses = await getCourses();
-  const bundlePrice = bundlePriceCents(courses.map((c) => c.price_cents));
 
   return (
     <div>
@@ -120,6 +142,40 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-5xl px-6 py-12">
+        <div className="grid items-center gap-10 rounded-3xl border border-border bg-card p-8 shadow-sm shadow-lilac/10 md:grid-cols-[300px_1fr]">
+          <div className="mx-auto w-full max-w-xs">
+            <Image
+              src="/author.jpg"
+              alt={AUTHOR.name}
+              width={1024}
+              height={1280}
+              className="rounded-3xl object-cover"
+            />
+          </div>
+          <div className="text-center md:text-left">
+            <p className="text-xs font-semibold uppercase tracking-widest text-pink-dark">Автор курса</p>
+            <h2 className="mt-2 text-2xl font-semibold text-foreground">{AUTHOR.name}</h2>
+            <div className="mt-4 space-y-2 text-sm opacity-80">
+              {AUTHOR.bioLines.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+            <p className="mt-4 text-sm font-medium text-foreground">{AUTHOR.rating}</p>
+            <div className="mt-6">
+              <a
+                href={AUTHOR.profileUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block rounded-full bg-gradient-to-r from-pink to-lilac px-6 py-2.5 text-sm font-medium text-white hover:opacity-90"
+              >
+                Профиль врача на ПроДокторов
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="courses" className="mx-auto max-w-5xl px-6 py-12">
         <h2 className="text-center text-2xl font-semibold text-foreground">Курсы</h2>
         <div className="mt-8 grid gap-6 sm:grid-cols-3">
@@ -144,11 +200,9 @@ export default async function HomePage() {
       <section className="mx-auto max-w-3xl px-6 py-12">
         <div className="rounded-3xl border border-border bg-card p-8 text-center shadow-sm shadow-lilac/10">
           <h2 className="text-xl font-semibold text-foreground">Весь путь целиком</h2>
-          <p className="mt-2 opacity-80">
-            Все три курса пакетом со скидкой {BUNDLE_DISCOUNT_PERCENT}% — доступ ко всем материалам сразу.
-          </p>
+          <p className="mt-2 opacity-80">Все три курса пакетом — доступ ко всем материалам сразу.</p>
           <div className="mt-4 flex items-center justify-center gap-4">
-            <span className="text-xl font-medium">{formatPrice(bundlePrice)}</span>
+            <span className="text-xl font-medium">{formatPrice(BUNDLE_PRICE_CENTS)}</span>
             <Link
               href="/bundle"
               className="rounded-full bg-gradient-to-r from-pink to-lilac px-5 py-2.5 text-sm font-medium text-white hover:opacity-90"

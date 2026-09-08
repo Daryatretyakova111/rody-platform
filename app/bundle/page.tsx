@@ -1,17 +1,14 @@
 import { getCourses } from '@/lib/queries';
-import { bundlePriceCents, formatPrice, BUNDLE_DISCOUNT_PERCENT } from '@/lib/config';
+import { BUNDLE_PRICE_CENTS, formatPrice } from '@/lib/config';
 import CheckoutForm from '@/components/CheckoutForm';
 
 export default async function BundlePage() {
   const courses = await getCourses();
-  const bundlePrice = bundlePriceCents(courses.map((c) => c.price_cents));
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
       <h1 className="text-3xl font-bold text-foreground">Весь путь: подготовка, роды, восстановление</h1>
-      <p className="mt-4 opacity-80">
-        Доступ ко всем трём курсам сразу, со скидкой {BUNDLE_DISCOUNT_PERCENT}% от суммы отдельных покупок.
-      </p>
+      <p className="mt-4 opacity-80">Доступ ко всем трём курсам сразу, одной покупкой.</p>
 
       <ul className="mt-8 space-y-3">
         {courses.map((course) => (
@@ -23,8 +20,8 @@ export default async function BundlePage() {
       </ul>
 
       <div className="mt-8 rounded-3xl border border-border bg-card p-6 shadow-sm shadow-lilac/10">
-        <p className="mb-4 text-lg font-medium text-foreground">Итого: {formatPrice(bundlePrice)}</p>
-        <CheckoutForm kind="bundle" priceLabel={formatPrice(bundlePrice)} />
+        <p className="mb-4 text-lg font-medium text-foreground">Итого: {formatPrice(BUNDLE_PRICE_CENTS)}</p>
+        <CheckoutForm kind="bundle" priceLabel={formatPrice(BUNDLE_PRICE_CENTS)} />
       </div>
     </div>
   );

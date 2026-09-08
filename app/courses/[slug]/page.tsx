@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import { getCourseBySlug, getModulesWithLessons } from '@/lib/queries';
 import { formatPrice } from '@/lib/config';
 import CheckoutForm from '@/components/CheckoutForm';
@@ -15,7 +16,12 @@ export default async function CoursePage({ params }: PageProps<'/courses/[slug]'
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-16">
-      <h1 className="text-3xl font-bold text-foreground">{course.title}</h1>
+      {course.image_url && (
+        <div className="relative mb-8 aspect-[4/3] w-full overflow-hidden rounded-3xl">
+          <Image src={course.image_url} alt={course.title} fill className="object-cover" priority />
+        </div>
+      )}
+      <h1 className="text-3xl font-bold uppercase tracking-wide text-foreground">{course.title}</h1>
       {course.subtitle && <p className="mt-2 text-lg opacity-80">{course.subtitle}</p>}
       {course.description && <p className="mt-4 opacity-80">{course.description}</p>}
 

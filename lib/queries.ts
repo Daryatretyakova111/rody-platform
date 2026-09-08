@@ -6,6 +6,7 @@ export interface Course {
   title: string;
   subtitle: string | null;
   description: string | null;
+  image_url: string | null;
   price_cents: number;
   sort_order: number;
 }

@@ -1,8 +1,8 @@
 import { randomBytes } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
-import { getOrCreateUser, getCourseBySlug, getCourses } from '@/lib/queries';
-import { bundlePriceCents } from '@/lib/config';
+import { getOrCreateUser, getCourseBySlug } from '@/lib/queries';
+import { BUNDLE_PRICE_CENTS } from '@/lib/config';
 import { buildPaymentUrl } from '@/lib/prodamus';
 
 export async function POST(request: NextRequest) {
@@ -37,9 +37,8 @@ export async function POST(request: NextRequest) {
     productName = course.title;
     returnPath = `/courses/${course.slug}`;
   } else {
-    const courses = await getCourses();
-    amountCents = bundlePriceCents(courses.map((c) => c.price_cents));
-    productName = 'Все три курса: подготовка к родам, роды, восстановление';
+    amountCents = BUNDLE_PRICE_CENTS;
+    productName = 'Все три курса: беременность и подготовка к родам, роды, восстановление';
     returnPath = '/';
   }
 

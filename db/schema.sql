@@ -11,9 +11,12 @@ CREATE TABLE IF NOT EXISTS courses (
   title TEXT NOT NULL,
   subtitle TEXT,
   description TEXT,
+  image_url TEXT,
   price_cents INTEGER NOT NULL,
   sort_order INTEGER NOT NULL DEFAULT 0
 );
+
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS image_url TEXT;
 
 CREATE TABLE IF NOT EXISTS modules (
   id SERIAL PRIMARY KEY,
