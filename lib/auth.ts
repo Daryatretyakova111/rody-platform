@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
+import { compare } from 'bcryptjs';
 import { sql } from '@/lib/db';
 
 const SESSION_COOKIE = 'session';
@@ -37,6 +38,18 @@ export async function consumeLoginToken(token: string): Promise<number | null> {
 
   await sql`UPDATE login_tokens SET used_at = now() WHERE token = ${token}`;
   return row.user_id;
+}
+
+export async function verifyPassword(email: string, password: string): Promise<number | null> {
+  const rows = (await sql`
+    SELECT id, password_hash FROM users WHERE email = ${email}
+  `) as { id: number; password_hash: string | null }[];
+
+  const user = rows[0];
+  if (!user || !user.password_hash) return null;
+
+  const valid = await compare(password, user.password_hash);
+  return valid ? user.id : null;
 }
 
 export async function setSessionCookie(userId: number): Promise<void> {
