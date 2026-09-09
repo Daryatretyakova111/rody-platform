@@ -48,3 +48,27 @@ export function IconHearts({ className }: IconProps) {
     </svg>
   );
 }
+
+export function LessonStatusIcon({ completed, className }: { completed: boolean; className?: string }) {
+  if (completed) {
+    return (
+      <svg viewBox="0 0 24 24" className={className}>
+        <circle cx="12" cy="12" r="10" fill="currentColor" />
+        <path
+          d="M7.5 12.5l3 3 6-6.5"
+          fill="none"
+          stroke="white"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className}>
+      <circle cx="12" cy="12" r="9.25" />
+    </svg>
+  );
+}

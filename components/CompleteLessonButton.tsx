@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { LessonStatusIcon } from '@/components/icons';
 
 export default function CompleteLessonButton({
   lessonId,
@@ -32,7 +33,12 @@ export default function CompleteLessonButton({
   }
 
   if (completed) {
-    return <p className="text-sm text-green-600">✅ Урок пройден</p>;
+    return (
+      <p className="flex items-center gap-2 text-sm text-pink-dark">
+        <LessonStatusIcon completed className="h-5 w-5 text-pink" />
+        Урок пройден
+      </p>
+    );
   }
 
   return (

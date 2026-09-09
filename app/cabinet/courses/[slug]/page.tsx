@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation';
 import { getSessionUserId } from '@/lib/auth';
 import { getCourseBySlug, getModulesWithLessons, hasCourseAccess, getCompletedLessonIds } from '@/lib/queries';
 import ProgressBar from '@/components/ProgressBar';
+import { LessonStatusIcon } from '@/components/icons';
 
 export default async function CabinetCoursePage({ params }: PageProps<'/cabinet/courses/[slug]'>) {
   const { slug } = await params;
@@ -34,7 +35,7 @@ export default async function CabinetCoursePage({ params }: PageProps<'/cabinet/
               href={`/cabinet/courses/${slug}/lessons/${lesson.id}`}
               className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 hover:border-lilac"
             >
-              <span>{completed.has(lesson.id) ? '✅' : '▶️'}</span>
+              <LessonStatusIcon completed={completed.has(lesson.id)} className="h-6 w-6 shrink-0 text-pink" />
               <span>
                 <span className="text-sm opacity-60">Урок {index + 1}</span>
                 <span className="block font-medium text-foreground">{lesson.title}</span>
