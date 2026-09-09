@@ -12,7 +12,7 @@ export default async function CoursePage({ params }: PageProps<'/courses/[slug]'
   if (!course) notFound();
 
   const modules = await getModulesWithLessons(course.id);
-  const lessonCount = modules.reduce((sum, mod) => sum + mod.lessons.length, 0);
+  const lessons = modules.flatMap((mod) => mod.lessons);
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-16">
@@ -31,16 +31,16 @@ export default async function CoursePage({ params }: PageProps<'/courses/[slug]'
 
       <div className="mt-12 rounded-2xl bg-muted p-6">
         <p className="font-medium text-foreground">
-          {modules.length} модулей · {lessonCount} видео-уроков · гайды, чек-листы и инструкции к каждой теме
+          {lessons.length} видео-уроков · гайды, чек-листы и инструкции к каждой теме
         </p>
         <ul className="mt-4 space-y-2">
-          {modules.slice(0, TEASER_COUNT).map((mod, index) => (
-            <li key={mod.id} className="text-sm opacity-80">
-              {index + 1}. {mod.title}
+          {lessons.slice(0, TEASER_COUNT).map((lesson, index) => (
+            <li key={lesson.id} className="text-sm opacity-80">
+              {index + 1}. {lesson.title}
             </li>
           ))}
-          {modules.length > TEASER_COUNT && (
-            <li className="text-sm opacity-60">и ещё {modules.length - TEASER_COUNT}…</li>
+          {lessons.length > TEASER_COUNT && (
+            <li className="text-sm opacity-60">и ещё {lessons.length - TEASER_COUNT}…</li>
           )}
         </ul>
         <p className="mt-4 text-sm opacity-60">
