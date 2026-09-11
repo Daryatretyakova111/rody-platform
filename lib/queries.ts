@@ -23,6 +23,8 @@ export interface Lesson {
   module_id: number;
   title: string;
   kinescope_video_id: string | null;
+  content: string | null;
+  widget: string | null;
   sort_order: number;
 }
 

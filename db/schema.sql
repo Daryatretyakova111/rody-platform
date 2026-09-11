@@ -33,8 +33,13 @@ CREATE TABLE IF NOT EXISTS lessons (
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   kinescope_video_id TEXT,
+  content TEXT,
+  widget TEXT,
   sort_order INTEGER NOT NULL DEFAULT 0
 );
+
+ALTER TABLE lessons ADD COLUMN IF NOT EXISTS content TEXT;
+ALTER TABLE lessons ADD COLUMN IF NOT EXISTS widget TEXT;
 
 CREATE TABLE IF NOT EXISTS materials (
   id SERIAL PRIMARY KEY,
@@ -68,10 +73,14 @@ CREATE TABLE IF NOT EXISTS purchases (
 CREATE TABLE IF NOT EXISTS progress (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id),
-  lesson_id INTEGER NOT NULL REFERENCES lessons(id),
+  lesson_id INTEGER NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
   completed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE (user_id, lesson_id)
 );
+
+-- Re-seeding a course deletes and recreates its lessons, so progress rows should go with them.
+ALTER TABLE progress DROP CONSTRAINT IF EXISTS progress_lesson_id_fkey;
+ALTER TABLE progress ADD CONSTRAINT progress_lesson_id_fkey FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS login_tokens (
   token TEXT PRIMARY KEY,
