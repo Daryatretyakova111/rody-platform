@@ -13,6 +13,7 @@ import VideoPlayer from '@/components/VideoPlayer';
 import LessonContent from '@/components/LessonContent';
 import PackingChecklist from '@/components/PackingChecklist';
 import BreathingTrainer from '@/components/BreathingTrainer';
+import PartnerToolkit from '@/components/PartnerToolkit';
 import MaterialsList from '@/components/MaterialsList';
 import CompleteLessonButton from '@/components/CompleteLessonButton';
 
@@ -65,6 +66,12 @@ export default async function LessonPage({ params }: PageProps<'/cabinet/courses
       {lesson.widget === 'breathing-trainer' && (
         <div className="mt-6">
           <BreathingTrainer />
+        </div>
+      )}
+
+      {lesson.widget === 'partner-toolkit' && (
+        <div className="mt-6">
+          <PartnerToolkit />
         </div>
       )}
 
