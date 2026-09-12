@@ -48,14 +48,11 @@ export default async function LessonPage({ params }: PageProps<'/cabinet/courses
       </Link>
       <h1 className="mt-1 text-2xl font-bold text-foreground">{lesson.title}</h1>
 
-      <div className="mt-6">
-        {lesson.kinescope_video_id ? (
+      <div className="mt-6 space-y-4">
+        {(lesson.kinescope_video_id || !lesson.content) && (
           <VideoPlayer kinescopeVideoId={lesson.kinescope_video_id} />
-        ) : lesson.content ? (
-          <LessonContent content={lesson.content} />
-        ) : (
-          <VideoPlayer kinescopeVideoId={null} />
         )}
+        {lesson.content && <LessonContent content={lesson.content} />}
       </div>
 
       {lesson.widget === 'packing-checklist' && (
