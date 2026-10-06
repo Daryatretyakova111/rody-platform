@@ -111,11 +111,24 @@ const courses: SeedCourse[] = [
         },
       },
       {
-        title: 'Медикаментозное обезболивание родов',
+        title: 'Обезболивание родов',
         lesson: {
-          title: 'Медикаментозное обезболивание родов',
-          content:
-            'Лекцию проведёт Захарова Ольга Викторовна — заведующая отделением анестезиологии и реанимации для женщин. Видео лекции появится здесь позже.',
+          title: 'Обезболивание родов',
+          kinescopeVideoId: '4omr8BEvctRXdyPeJ8w93S',
+        },
+      },
+      {
+        title: 'Спинальная анестезия',
+        lesson: {
+          title: 'Спинальная анестезия',
+          kinescopeVideoId: 'eX2nB9jhTRjxQoBWyzkFmT',
+        },
+      },
+      {
+        title: 'Эпидуральная анестезия',
+        lesson: {
+          title: 'Эпидуральная анестезия',
+          kinescopeVideoId: '5tiVYoSc2v3SJQcwtn4Csi',
         },
       },
       {
@@ -127,11 +140,17 @@ const courses: SeedCourse[] = [
         },
       },
       {
-        title: 'Уход за малышом в родильном доме',
+        title: 'Осмотр малыша в родильном доме',
         lesson: {
-          title: 'Уход за малышом в родильном доме',
-          content:
-            'Лекцию проведёт Ракова Альбина Ханифовна — заведующая отделением новорождённых. Видео лекции появится здесь позже.',
+          title: 'Осмотр малыша в родильном доме',
+          kinescopeVideoId: 'gJFKoiPSELgpb5CzE9BRFj',
+        },
+      },
+      {
+        title: 'Первые минуты малыша',
+        lesson: {
+          title: 'Первые минуты малыша',
+          kinescopeVideoId: 'gR8PyyP3deWEprrzv9Eyw2',
         },
       },
       {
@@ -184,9 +203,17 @@ const courses: SeedCourse[] = [
         },
       },
       {
-        title: 'Тренировка с экспертом',
+        title: 'Упражнения в родильном доме',
         lesson: {
-          title: 'Тренировка от приглашённого эксперта: восстановление после родов',
+          title: 'Упражнения для восстановления в родильном доме',
+          kinescopeVideoId: '58GQPfD7es2UZAYLh4riw1',
+        },
+      },
+      {
+        title: 'Упражнения в первые 6 недель',
+        lesson: {
+          title: 'Упражнения в первые 6 недель после родов',
+          kinescopeVideoId: 'bQMhgdgZigLoYx6A1EhFLo',
         },
       },
     ],
