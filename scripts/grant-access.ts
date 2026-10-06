@@ -11,7 +11,7 @@ if (!process.env.DATABASE_URL) {
 const sql = neon(process.env.DATABASE_URL);
 
 // Grants a user full access to all courses (like a bundle purchase), and
-// optionally sets a password for password-based login via /admin-login.
+// optionally sets a password for password-based login via /login.
 //
 // Usage: GRANT_EMAIL=someone@example.com GRANT_PASSWORD=secret npm run grant-access
 async function main() {

@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
-import { getUserById } from '@/lib/queries';
 import { verifyWebhookSignature } from '@/lib/prodamus';
-import { createLoginToken } from '@/lib/auth';
-import { sendMagicLinkEmail } from '@/lib/mail';
 
 interface OrderRow {
   id: number;
@@ -54,14 +51,6 @@ export async function POST(request: NextRequest) {
     INSERT INTO purchases (user_id, course_id, order_id)
     VALUES (${order.user_id}, ${order.course_id}, ${order.id})
   `;
-
-  const user = await getUserById(order.user_id);
-  if (user) {
-    const token = await createLoginToken(user.id);
-    const origin = new URL(request.url).origin;
-    const loginUrl = `${origin}/api/auth/callback?token=${token}`;
-    await sendMagicLinkEmail(user.email, loginUrl);
-  }
 
   return new NextResponse('OK');
 }

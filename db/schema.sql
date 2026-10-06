@@ -82,13 +82,6 @@ CREATE TABLE IF NOT EXISTS progress (
 ALTER TABLE progress DROP CONSTRAINT IF EXISTS progress_lesson_id_fkey;
 ALTER TABLE progress ADD CONSTRAINT progress_lesson_id_fkey FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE;
 
-CREATE TABLE IF NOT EXISTS login_tokens (
-  token TEXT PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id),
-  expires_at TIMESTAMPTZ NOT NULL,
-  used_at TIMESTAMPTZ
-);
-
 CREATE INDEX IF NOT EXISTS idx_modules_course ON modules(course_id);
 CREATE INDEX IF NOT EXISTS idx_lessons_module ON lessons(module_id);
 CREATE INDEX IF NOT EXISTS idx_materials_lesson ON materials(lesson_id);

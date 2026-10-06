@@ -119,11 +119,11 @@ export async function getUserById(id: number): Promise<User | null> {
   return rows[0] ?? null;
 }
 
-export async function getOrCreateUser(email: string, name?: string): Promise<User> {
+export async function getOrCreateUser(email: string, passwordHash: string, name?: string): Promise<User> {
   const rows = (await sql`
-    INSERT INTO users (email, name)
-    VALUES (${email}, ${name ?? null})
-    ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
+    INSERT INTO users (email, password_hash, name)
+    VALUES (${email}, ${passwordHash}, ${name ?? null})
+    ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash
     RETURNING id, email, name
   `) as User[];
   return rows[0];

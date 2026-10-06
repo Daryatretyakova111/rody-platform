@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
 
   const userId = await verifyPassword(email, password);
   if (!userId) {
-    return NextResponse.redirect(`${origin}/admin-login?error=1`, { status: 303 });
+    return NextResponse.redirect(`${origin}/login?error=1`, { status: 303 });
   }
 
   await setSessionCookie(userId);

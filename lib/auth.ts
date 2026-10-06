@@ -1,4 +1,3 @@
-import { randomBytes } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
 import { compare } from 'bcryptjs';
@@ -6,7 +5,6 @@ import { sql } from '@/lib/db';
 
 const SESSION_COOKIE = 'session';
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
-const LOGIN_TOKEN_TTL_MINUTES = 30;
 
 function getJwtSecret(): Uint8Array {
   const secret = process.env.AUTH_JWT_SECRET;
@@ -14,30 +12,6 @@ function getJwtSecret(): Uint8Array {
     throw new Error('AUTH_JWT_SECRET environment variable is not set');
   }
   return new TextEncoder().encode(secret);
-}
-
-export async function createLoginToken(userId: number): Promise<string> {
-  const token = randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + LOGIN_TOKEN_TTL_MINUTES * 60 * 1000);
-  await sql`
-    INSERT INTO login_tokens (token, user_id, expires_at)
-    VALUES (${token}, ${userId}, ${expiresAt.toISOString()})
-  `;
-  return token;
-}
-
-export async function consumeLoginToken(token: string): Promise<number | null> {
-  const rows = (await sql`
-    SELECT user_id, expires_at, used_at FROM login_tokens WHERE token = ${token}
-  `) as { user_id: number; expires_at: string; used_at: string | null }[];
-
-  const row = rows[0];
-  if (!row || row.used_at || new Date(row.expires_at) < new Date()) {
-    return null;
-  }
-
-  await sql`UPDATE login_tokens SET used_at = now() WHERE token = ${token}`;
-  return row.user_id;
 }
 
 export async function verifyPassword(email: string, password: string): Promise<number | null> {

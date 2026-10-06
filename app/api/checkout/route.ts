@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import { hash } from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { getOrCreateUser, getCourseBySlug } from '@/lib/queries';
@@ -8,6 +9,7 @@ import { buildPaymentUrl } from '@/lib/prodamus';
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const email = String(formData.get('email') ?? '').trim().toLowerCase();
+  const password = String(formData.get('password') ?? '');
   const name = String(formData.get('name') ?? '').trim() || undefined;
   const kind = String(formData.get('kind') ?? '');
   const courseSlug = String(formData.get('courseSlug') ?? '');
@@ -15,11 +17,15 @@ export async function POST(request: NextRequest) {
   if (!email || !email.includes('@')) {
     return NextResponse.json({ error: 'Некорректный email' }, { status: 400 });
   }
+  if (password.length < 6) {
+    return NextResponse.json({ error: 'Пароль должен быть не короче 6 символов' }, { status: 400 });
+  }
   if (kind !== 'course' && kind !== 'bundle') {
     return NextResponse.json({ error: 'Некорректный тип заказа' }, { status: 400 });
   }
 
-  const user = await getOrCreateUser(email, name);
+  const passwordHash = await hash(password, 12);
+  const user = await getOrCreateUser(email, passwordHash, name);
   const origin = new URL(request.url).origin;
 
   let courseId: number | null = null;
