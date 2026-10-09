@@ -9,7 +9,8 @@
     "lint": "eslint",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
-    "grant-access": "tsx scripts/grant-access.ts"
+    "grant-access": "tsx scripts/grant-access.ts",
+    "mark-paid": "tsx scripts/mark-paid.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

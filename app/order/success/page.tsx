@@ -5,7 +5,8 @@ export default async function OrderSuccessPage() {
     <div className="mx-auto max-w-xl px-6 py-24 text-center">
       <h1 className="text-2xl font-bold text-foreground">Спасибо за покупку!</h1>
       <p className="mt-4 opacity-80">
-        Курс уже доступен в личном кабинете. Войдите по email и паролю, которые вы указали при оплате.
+        Как только оплата подтвердится, курс появится в личном кабинете. Войдите по email и паролю, которые вы
+        указали при оформлении заказа.
       </p>
       <div className="mt-6">
         <Link

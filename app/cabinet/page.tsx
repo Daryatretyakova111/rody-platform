@@ -13,6 +13,7 @@ export default async function CabinetPage() {
       {courses.length === 0 ? (
         <p className="mt-4 opacity-80">
           Пока нет купленных курсов. <Link href="/#courses" className="underline">Посмотреть курсы</Link>.
+          Если вы только что оплатили — курс появится здесь после подтверждения оплаты.
         </p>
       ) : (
         <ul className="mt-6 grid gap-4 sm:grid-cols-2">

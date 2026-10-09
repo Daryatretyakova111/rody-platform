@@ -3,8 +3,7 @@ import { hash } from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { getOrCreateUser, getCourseBySlug } from '@/lib/queries';
-import { BUNDLE_PRICE_CENTS } from '@/lib/config';
-import { buildPaymentUrl } from '@/lib/prodamus';
+import { BUNDLE_PRICE_CENTS, BUNDLE_PAYMENT_LINK, COURSE_PAYMENT_LINKS } from '@/lib/config';
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
@@ -24,14 +23,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Некорректный тип заказа' }, { status: 400 });
   }
 
-  const passwordHash = await hash(password, 12);
-  const user = await getOrCreateUser(email, passwordHash, name);
-  const origin = new URL(request.url).origin;
-
   let courseId: number | null = null;
   let amountCents: number;
-  let productName: string;
-  let returnPath: string;
+  let paymentUrl: string | undefined;
 
   if (kind === 'course') {
     const course = await getCourseBySlug(courseSlug);
@@ -40,29 +34,26 @@ export async function POST(request: NextRequest) {
     }
     courseId = course.id;
     amountCents = course.price_cents;
-    productName = course.title;
-    returnPath = `/courses/${course.slug}`;
+    paymentUrl = COURSE_PAYMENT_LINKS[course.slug];
   } else {
     amountCents = BUNDLE_PRICE_CENTS;
-    productName = 'Все три курса: беременность и подготовка к родам, роды, восстановление';
-    returnPath = '/';
+    paymentUrl = BUNDLE_PAYMENT_LINK;
   }
 
-  const prodamusOrderId = `ord_${Date.now()}_${randomBytes(4).toString('hex')}`;
+  if (!paymentUrl) {
+    return NextResponse.json({ error: 'Для этого курса не настроена оплата' }, { status: 404 });
+  }
 
+  const passwordHash = await hash(password, 12);
+  const user = await getOrCreateUser(email, passwordHash, name);
+
+  // Payment happens on an external GetPlatinum page, so this order stays 'pending'
+  // until access is confirmed (see scripts/mark-paid.ts).
+  const orderRef = `ord_${Date.now()}_${randomBytes(4).toString('hex')}`;
   await sql`
     INSERT INTO orders (user_id, kind, course_id, prodamus_order_id, amount_cents, status)
-    VALUES (${user.id}, ${kind}, ${courseId}, ${prodamusOrderId}, ${amountCents}, 'pending')
+    VALUES (${user.id}, ${kind}, ${courseId}, ${orderRef}, ${amountCents}, 'pending')
   `;
-
-  const paymentUrl = buildPaymentUrl({
-    orderId: prodamusOrderId,
-    customerEmail: email,
-    productName,
-    amountRub: amountCents / 100,
-    successUrl: `${origin}/order/success?order=${prodamusOrderId}`,
-    returnUrl: `${origin}${returnPath}`,
-  });
 
   return NextResponse.redirect(paymentUrl, { status: 303 });
 }

@@ -44,7 +44,7 @@ export default async function CoursePage({ params }: PageProps<'/courses/[slug]'
           )}
         </ul>
         <p className="mt-4 text-sm opacity-60">
-          Полная программа, видео и материалы открываются в личном кабинете сразу после оплаты.
+          Полная программа, видео и материалы открываются в личном кабинете после подтверждения оплаты.
         </p>
       </div>
     </div>

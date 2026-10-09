@@ -44,6 +44,9 @@ export default function CheckoutForm({ kind, courseSlug, priceLabel }: CheckoutF
       >
         Купить за {priceLabel}
       </button>
+      <p className="text-xs opacity-60">
+        После нажатия откроется страница оплаты. Укажите там тот же email — по нему откроется доступ к курсу.
+      </p>
     </form>
   );
 }
