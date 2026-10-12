@@ -1,7 +1,7 @@
 export const SITE_NAME = 'Роды и восстановление';
 
 // Fixed price for all three courses bought together as one bundle.
-export const BUNDLE_PRICE_CENTS = 690000;
+export const BUNDLE_PRICE_CENTS = 570000;
 
 // GetPlatinum payment pages, keyed by course slug.
 export const COURSE_PAYMENT_LINKS: Record<string, string> = {

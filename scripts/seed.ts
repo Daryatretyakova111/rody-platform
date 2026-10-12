@@ -42,7 +42,7 @@ const courses: SeedCourse[] = [
     description:
       'Курс для будущих мам: что происходит с телом, как распознать начало родов, что взять с собой и как подготовиться морально — себе и партнёру.',
     imageUrl: '/courses/podgotovka-k-rodam.jpg',
-    priceCents: 290000,
+    priceCents: 390000,
     modules: [
       {
         title: 'Вводная лекция',
@@ -101,7 +101,7 @@ const courses: SeedCourse[] = [
     description:
       'Что происходит в каждом периоде родов, какие вмешательства возможны и зачем, как помогать себе и как партнёру поддержать вас.',
     imageUrl: '/courses/rody.jpg',
-    priceCents: 290000,
+    priceCents: 390000,
     modules: [
       {
         title: 'Послеродовой период',
@@ -170,7 +170,7 @@ const courses: SeedCourse[] = [
     description:
       'Как проходит восстановление после естественных родов и кесарева, на что обращать внимание, когда возвращаться к спорту и близости, как наладить ГВ.',
     imageUrl: '/courses/vosstanovlenie.jpg',
-    priceCents: 290000,
+    priceCents: 390000,
     modules: [
       {
         title: 'Первый месяц после родов',
