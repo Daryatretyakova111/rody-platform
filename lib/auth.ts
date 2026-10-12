@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
-import { compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { sql } from '@/lib/db';
 
 const SESSION_COOKIE = 'session';
@@ -24,6 +24,22 @@ export async function verifyPassword(email: string, password: string): Promise<n
 
   const valid = await compare(password, user.password_hash);
   return valid ? user.id : null;
+}
+
+/** Sets a password only for an account that has none yet; returns false if it already has one. */
+export async function setInitialPassword(userId: number, password: string): Promise<boolean> {
+  const passwordHash = await hash(password, 12);
+  const rows = (await sql`
+    UPDATE users SET password_hash = ${passwordHash}
+    WHERE id = ${userId} AND password_hash IS NULL
+    RETURNING id
+  `) as unknown[];
+  return rows.length > 0;
+}
+
+export async function isAdmin(userId: number): Promise<boolean> {
+  const rows = (await sql`SELECT is_admin FROM users WHERE id = ${userId}`) as { is_admin: boolean }[];
+  return rows[0]?.is_admin === true;
 }
 
 export async function setSessionCookie(userId: number): Promise<void> {

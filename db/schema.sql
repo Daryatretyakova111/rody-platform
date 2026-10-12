@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT false;
 
 CREATE TABLE IF NOT EXISTS courses (
   id SERIAL PRIMARY KEY,
@@ -61,6 +62,9 @@ CREATE TABLE IF NOT EXISTS orders (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   paid_at TIMESTAMPTZ
 );
+
+-- Secret in the post-payment redirect URL: lets the buyer set their password right after paying.
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS claim_token TEXT;
 
 CREATE TABLE IF NOT EXISTS purchases (
   id SERIAL PRIMARY KEY,

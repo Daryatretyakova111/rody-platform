@@ -119,14 +119,32 @@ export async function getUserById(id: number): Promise<User | null> {
   return rows[0] ?? null;
 }
 
-export async function getOrCreateUser(email: string, passwordHash: string, name?: string): Promise<User> {
+export async function getOrCreateUser(email: string, name?: string): Promise<User> {
   const rows = (await sql`
-    INSERT INTO users (email, password_hash, name)
-    VALUES (${email}, ${passwordHash}, ${name ?? null})
-    ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash
+    INSERT INTO users (email, name)
+    VALUES (${email}, ${name ?? null})
+    ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
     RETURNING id, email, name
   `) as User[];
   return rows[0];
+}
+
+export interface ClaimableOrder {
+  id: number;
+  status: string;
+  user_id: number;
+  email: string;
+  has_password: boolean;
+}
+
+/** Looks up an order by the reference + secret from the post-payment redirect URL. */
+export async function getOrderByClaim(orderRef: string, token: string): Promise<ClaimableOrder | null> {
+  const rows = (await sql`
+    SELECT o.id, o.status, o.user_id, u.email, (u.password_hash IS NOT NULL) AS has_password
+    FROM orders o JOIN users u ON u.id = o.user_id
+    WHERE o.prodamus_order_id = ${orderRef} AND o.claim_token = ${token}
+  `) as ClaimableOrder[];
+  return rows[0] ?? null;
 }
 
 /** Courses the user has access to: directly purchased, or via a bundle purchase (course_id IS NULL). */

@@ -1,20 +1,13 @@
 import { randomBytes } from 'node:crypto';
-import { hash } from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { getOrCreateUser, getCourseBySlug } from '@/lib/queries';
-import { BUNDLE_PRICE_CENTS, BUNDLE_PAYMENT_LINK, COURSE_PAYMENT_LINKS } from '@/lib/config';
-import {
-  createPaymentUrl,
-  isGetPlatinumConfigured,
-  POSITION_PREFIX_COURSE,
-  POSITION_PREFIX_COURSE_SET,
-} from '@/lib/getplatinum';
+import { BUNDLE_OFFER_ID, BUNDLE_PRICE_CENTS, COURSE_OFFER_IDS } from '@/lib/config';
+import { createOfferPayment, isGetPlatinumConfigured } from '@/lib/getplatinum';
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const email = String(formData.get('email') ?? '').trim().toLowerCase();
-  const password = String(formData.get('password') ?? '');
   const name = String(formData.get('name') ?? '').trim() || undefined;
   const kind = String(formData.get('kind') ?? '');
   const courseSlug = String(formData.get('courseSlug') ?? '');
@@ -22,19 +15,17 @@ export async function POST(request: NextRequest) {
   if (!email || !email.includes('@')) {
     return NextResponse.json({ error: 'Некорректный email' }, { status: 400 });
   }
-  if (password.length < 6) {
-    return NextResponse.json({ error: 'Пароль должен быть не короче 6 символов' }, { status: 400 });
-  }
   if (kind !== 'course' && kind !== 'bundle') {
     return NextResponse.json({ error: 'Некорректный тип заказа' }, { status: 400 });
+  }
+  if (!isGetPlatinumConfigured()) {
+    return NextResponse.json({ error: 'Оплата временно недоступна' }, { status: 503 });
   }
 
   let courseId: number | null = null;
   let amountCents: number;
-  let productName: string;
-  let positionPrefix: number;
+  let offerId: number | undefined;
   let returnPath: string;
-  let staticPaymentUrl: string | undefined;
 
   if (kind === 'course') {
     const course = await getCourseBySlug(courseSlug);
@@ -43,53 +34,49 @@ export async function POST(request: NextRequest) {
     }
     courseId = course.id;
     amountCents = course.price_cents;
-    productName = course.title;
-    positionPrefix = POSITION_PREFIX_COURSE;
+    offerId = COURSE_OFFER_IDS[course.slug];
     returnPath = `/courses/${course.slug}`;
-    staticPaymentUrl = COURSE_PAYMENT_LINKS[course.slug];
   } else {
     amountCents = BUNDLE_PRICE_CENTS;
-    productName = 'Подготовка к родам, роды, восстановление после родов';
-    positionPrefix = POSITION_PREFIX_COURSE_SET;
+    offerId = BUNDLE_OFFER_ID;
     returnPath = '/bundle';
-    staticPaymentUrl = BUNDLE_PAYMENT_LINK;
   }
 
-  const passwordHash = await hash(password, 12);
-  const user = await getOrCreateUser(email, passwordHash, name);
-
-  const orderRef = `ord_${Date.now()}_${randomBytes(4).toString('hex')}`;
-  await sql`
-    INSERT INTO orders (user_id, kind, course_id, prodamus_order_id, amount_cents, status)
-    VALUES (${user.id}, ${kind}, ${courseId}, ${orderRef}, ${amountCents}, 'pending')
-  `;
-
-  // With an API key, every order gets its own payment page and GetPlatinum reports the result back
-  // to /api/webhooks/getplatinum. Without one, fall back to the static payment links (access is then
-  // opened manually with `npm run mark-paid`).
-  if (isGetPlatinumConfigured()) {
-    const origin = new URL(request.url).origin;
-    try {
-      const paymentUrl = await createPaymentUrl({
-        orderRef,
-        amountCents,
-        productName,
-        positionPrefix,
-        userId: user.id,
-        email: user.email,
-        notificationUrl: `${origin}/api/webhooks/getplatinum`,
-        successUrl: `${origin}/order/success`,
-        failUrl: `${origin}${returnPath}`,
-      });
-      return NextResponse.redirect(paymentUrl, { status: 303 });
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json({ error: 'Не удалось создать ссылку на оплату. Попробуйте позже.' }, { status: 502 });
-    }
-  }
-
-  if (!staticPaymentUrl) {
+  if (!offerId) {
     return NextResponse.json({ error: 'Для этого курса не настроена оплата' }, { status: 404 });
   }
-  return NextResponse.redirect(staticPaymentUrl, { status: 303 });
+
+  const user = await getOrCreateUser(email, name);
+
+  const orderRef = `ord_${Date.now()}_${randomBytes(4).toString('hex')}`;
+  const claimToken = randomBytes(24).toString('hex');
+  const origin = new URL(request.url).origin;
+
+  try {
+    const payment = await createOfferPayment({
+      offerId,
+      orderRef,
+      userId: user.id,
+      email: user.email,
+      notificationUrl: `${origin}/api/webhooks/getplatinum`,
+      successUrl: `${origin}/order/success?order=${orderRef}&t=${claimToken}`,
+      failUrl: `${origin}${returnPath}`,
+    });
+
+    // The charged amount comes from the GetPlatinum offer; never sell at a price different from the one on the site.
+    if (payment.amountCents !== amountCents) {
+      console.error(`Price mismatch for offer ${offerId}: site ${amountCents}, GetPlatinum ${payment.amountCents}`);
+      return NextResponse.json({ error: 'Не удалось оформить заказ. Попробуйте позже.' }, { status: 502 });
+    }
+
+    // `prodamus_order_id` is a legacy column name — it holds our own order reference (sent as dealId).
+    await sql`
+      INSERT INTO orders (user_id, kind, course_id, prodamus_order_id, amount_cents, status, claim_token)
+      VALUES (${user.id}, ${kind}, ${courseId}, ${orderRef}, ${amountCents}, 'pending', ${claimToken})
+    `;
+    return NextResponse.redirect(payment.url, { status: 303 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Не удалось создать ссылку на оплату. Попробуйте позже.' }, { status: 502 });
+  }
 }

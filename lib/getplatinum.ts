@@ -2,10 +2,6 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 
 const API_BASE = 'https://darya-erohina.getplatinum.ru/api/public/v2/pay';
 
-// Receipt categories from the GetPlatinum API docs (PositionDto.prefix).
-export const POSITION_PREFIX_COURSE = 12;
-export const POSITION_PREFIX_COURSE_SET = 17;
-
 export function isGetPlatinumConfigured(): boolean {
   return Boolean(process.env.GETPLATINUM_API_KEY);
 }
@@ -16,11 +12,9 @@ function getApiKey(): string {
   return key;
 }
 
-interface CreatePaymentUrlArgs {
+interface CreateOfferPaymentArgs {
+  offerId: number;
   orderRef: string;
-  amountCents: number;
-  productName: string;
-  positionPrefix: number;
   userId: number;
   email: string;
   notificationUrl: string;
@@ -28,28 +22,20 @@ interface CreatePaymentUrlArgs {
   failUrl: string;
 }
 
-/** Asks GetPlatinum for a payment page for this order; the buyer is redirected to the returned URL. */
-export async function createPaymentUrl(args: CreatePaymentUrlArgs): Promise<string> {
-  const response = await fetch(`${API_BASE}/init-payment-url`, {
+/**
+ * Creates a payment page for one of the cabinet offers, tied to our order reference.
+ * Returns the page URL and the amount (in kopecks) GetPlatinum will charge, taken from the offer.
+ */
+export async function createOfferPayment(args: CreateOfferPaymentArgs): Promise<{ url: string; amountCents: number }> {
+  const response = await fetch(`${API_BASE}/init-payment-url-by-offer`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getApiKey()}`,
     },
     body: JSON.stringify({
+      offerId: args.offerId,
       dealId: args.orderRef,
-      currency: 'RUB',
-      amount: args.amountCents,
-      positions: [
-        {
-          prefix: args.positionPrefix,
-          name: args.productName,
-          price: args.amountCents,
-          quantity: 1,
-          // Tax rate for the fiscal receipt — must match the organization's tax regime.
-          vat: process.env.GETPLATINUM_VAT ?? 'none',
-        },
-      ],
       clientParams: { clientId: String(args.userId), email: args.email },
       notificationUrl: args.notificationUrl,
       successUrl: args.successUrl,
@@ -59,16 +45,17 @@ export async function createPaymentUrl(args: CreatePaymentUrlArgs): Promise<stri
 
   const data = (await response.json().catch(() => null)) as {
     formUrl?: string;
+    amount?: number;
     errorCode?: number;
     errorMessage?: string;
   } | null;
 
-  if (!response.ok || !data?.formUrl || data.errorCode) {
+  if (!response.ok || !data?.formUrl || typeof data.amount !== 'number' || data.errorCode) {
     throw new Error(
-      `GetPlatinum init-payment-url failed (${response.status}): ${data?.errorMessage ?? 'no response body'}`
+      `GetPlatinum init-payment-url-by-offer failed (${response.status}): ${data?.errorMessage ?? 'no response body'}`
     );
   }
-  return data.formUrl;
+  return { url: data.formUrl, amountCents: data.amount };
 }
 
 /** Callback authenticity check: HMAC-SHA256 of the exact request body, keyed with the API key, upper-case hex. */

@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { getSessionUserId } from '@/lib/auth';
+import { getSessionUserId, isAdmin } from '@/lib/auth';
 import { SITE_NAME } from '@/lib/config';
 
 export default async function Header() {
   const userId = await getSessionUserId();
+  const admin = userId ? await isAdmin(userId) : false;
 
   return (
     <header className="border-b border-border bg-card/70 backdrop-blur">
@@ -20,6 +21,11 @@ export default async function Header() {
               <Link href="/cabinet" className="hover:text-pink-dark">
                 Личный кабинет
               </Link>
+              {admin && (
+                <Link href="/admin" className="hover:text-pink-dark">
+                  Админка
+                </Link>
+              )}
               <form action="/api/auth/logout" method="post">
                 <button type="submit" className="cursor-pointer opacity-70 hover:opacity-100">
                   Выйти

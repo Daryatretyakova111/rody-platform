@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { SUPPORT_URL } from '@/lib/config';
+
 export default async function LoginPage({ searchParams }: PageProps<'/login'>) {
   const { error } = await searchParams;
 
@@ -5,7 +8,7 @@ export default async function LoginPage({ searchParams }: PageProps<'/login'>) {
     <div className="mx-auto max-w-md px-6 py-24">
       <h1 className="text-2xl font-bold text-foreground">Вход в личный кабинет</h1>
       <p className="mt-2 opacity-80">
-        Введите email и пароль, которые указали при оплате курса.
+        Введите email, который вы указали при заказе, и свой пароль.
       </p>
 
       {error && (
@@ -36,6 +39,15 @@ export default async function LoginPage({ searchParams }: PageProps<'/login'>) {
           Войти
         </button>
       </form>
+
+      <div className="mt-6 space-y-2 text-sm opacity-80">
+        <p>
+          Оплатили курс, но ещё не придумали пароль? <Link href="/first-login" className="underline">Первый вход</Link>
+        </p>
+        <p>
+          Забыли пароль? <a href={SUPPORT_URL} className="underline">Напишите в поддержку</a>, мы поможем восстановить доступ.
+        </p>
+      </div>
     </div>
   );
 }
