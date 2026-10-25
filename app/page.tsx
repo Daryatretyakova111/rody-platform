@@ -102,6 +102,7 @@ const FAQ = [
 
 export default async function HomePage() {
   const courses = await getCourses();
+  const separateTotal = courses.reduce((sum, course) => sum + course.price_cents, 0);
 
   return (
     <div>
@@ -172,8 +173,30 @@ export default async function HomePage() {
       </section>
 
       <section id="courses" className="mx-auto max-w-5xl px-6 py-12">
-        <h2 className="text-center text-2xl font-semibold text-foreground">Курсы</h2>
-        <div className="mt-8 grid gap-6 sm:grid-cols-3">
+        <h2 className="text-center text-2xl font-semibold text-foreground">Выберите вариант</h2>
+
+        <div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-lilac/40 bg-gradient-to-br from-pink/10 to-lilac/10 p-8 text-center shadow-sm shadow-lilac/10">
+          <p className="text-xs font-semibold uppercase tracking-widest text-pink-dark">Выгодное предложение</p>
+          <h3 className="mt-2 text-xl font-semibold text-foreground">Весь путь целиком: все три курса</h3>
+          <p className="mt-2 opacity-80">
+            Подготовка к родам, роды и восстановление — доступ ко всем материалам сразу.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-4">
+            <span className="text-2xl font-semibold text-foreground">{formatPrice(BUNDLE_PRICE_CENTS)}</span>
+            {separateTotal > BUNDLE_PRICE_CENTS && (
+              <span className="text-sm opacity-60 line-through">{formatPrice(separateTotal)}</span>
+            )}
+            <Link
+              href="/bundle"
+              className="rounded-full bg-gradient-to-r from-pink to-lilac px-6 py-2.5 text-sm font-medium text-white hover:opacity-90"
+            >
+              Купить пакет
+            </Link>
+          </div>
+        </div>
+
+        <h3 className="mt-12 text-center text-lg font-medium text-foreground">Или выберите отдельный курс</h3>
+        <div className="mt-6 grid gap-6 sm:grid-cols-3">
           {courses.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
@@ -189,22 +212,6 @@ export default async function HomePage() {
               <p className="mt-2 text-sm opacity-80">{item.text}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-3xl px-6 py-12">
-        <div className="rounded-3xl border border-border bg-card p-8 text-center shadow-sm shadow-lilac/10">
-          <h2 className="text-xl font-semibold text-foreground">Весь путь целиком</h2>
-          <p className="mt-2 opacity-80">Все три курса пакетом — доступ ко всем материалам сразу.</p>
-          <div className="mt-4 flex items-center justify-center gap-4">
-            <span className="text-xl font-medium">{formatPrice(BUNDLE_PRICE_CENTS)}</span>
-            <Link
-              href="/bundle"
-              className="rounded-full bg-gradient-to-r from-pink to-lilac px-5 py-2.5 text-sm font-medium text-white hover:opacity-90"
-            >
-              Купить пакет
-            </Link>
-          </div>
         </div>
       </section>
 
