@@ -184,14 +184,7 @@ export async function markLessonComplete(userId: number, lessonId: number): Prom
   `;
 }
 
-export async function getMaterialsForUser(userId: number): Promise<(Material & { course_title: string })[]> {
-  return (await sql`
-    SELECT DISTINCT mat.*, c.title AS course_title
-    FROM materials mat
-    LEFT JOIN lessons l ON l.id = mat.lesson_id
-    LEFT JOIN modules m ON m.id = l.module_id
-    JOIN courses c ON c.id = COALESCE(m.course_id, mat.course_id)
-    JOIN purchases p ON p.user_id = ${userId} AND (p.course_id = c.id OR p.course_id IS NULL)
-    ORDER BY c.title ASC, mat.title ASC
-  `) as (Material & { course_title: string })[];
+export async function getSetting(key: string): Promise<string | null> {
+  const rows = (await sql`SELECT value FROM site_settings WHERE key = ${key}`) as { value: string }[];
+  return rows[0]?.value ?? null;
 }

@@ -14,9 +14,6 @@ export default async function CabinetLayout({ children }: LayoutProps<'/cabinet'
         <Link href="/cabinet" className="hover:text-pink-dark">
           Мои курсы
         </Link>
-        <Link href="/cabinet/library" className="hover:text-pink-dark">
-          Библиотека материалов
-        </Link>
       </nav>
       {children}
     </div>
